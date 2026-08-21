@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-ml-deployment
+  labels:
+    app: django-ml
+spec:
+  replicas: 2 # AIOps Rule: Keeps 2 identical copies of your Hugging Face API running in case one crashes!
+  selector:
+    matchLabels:
+      app: django-ml
+  template:
+    metadata:
+      labels:
+        app: django-ml
+    spec:
+      containers:
+        - name: django-ml-container
+          image: shahzeb10/mymlproject:latest # Pulls directly from your successful Docker Hub image asset
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-ml-service
+spec:
+  type: LoadBalancer # Automatically assigns a public public web IP address to access your API globally
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: django-ml
