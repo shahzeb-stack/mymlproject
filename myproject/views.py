@@ -12,7 +12,8 @@ load_dotenv()
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", ""))
 
 # Initialize Hugging Face pipeline (downloads a small text analyzer model)
-classifier = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+classifier = pipeline("sentiment-analysis", model="lxyuan/distilbert-base-multilingual-cased-sentiments-student")
+
 
 @api_view(['POST'])
 def predict_sentiment(request):
