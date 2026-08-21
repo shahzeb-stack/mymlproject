@@ -1,0 +1,18 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: django-ml-autoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: django-ml-deployment # Links directly to your Kubernetes deployment sheet
+  minReplicas: 2 # AIOps Safety Rule: Never drop below 2 containers (prevents downtime)
+  maxReplicas: 10 # Economic Cap: Never scale past 10 copies (prevents surprise bills)
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 75 # Scaling Rule: Spin up a new copy if average CPU usage crosses 75%
